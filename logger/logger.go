@@ -23,3 +23,9 @@ func LoggerHandler(handler fasthttp.RequestHandler) fasthttp.RequestHandler {
 		)
 	})
 }
+
+func LoggerInfo(info string) {
+	Logger.Info(info,
+		zap.String("date", time.Now().String()),
+	)
+}

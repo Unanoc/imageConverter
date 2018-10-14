@@ -11,5 +11,6 @@ func NewRouter() *fasthttprouter.Router {
 
 	router.GET("/", handler.MainHandler)
 	router.POST("/api/convert", handler.ConvertHandler)
+	router.GET("/static/images/*name", handler.ImgHandler)
 	return router
 }

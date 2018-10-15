@@ -84,7 +84,7 @@ func ConvertHandler(ctx *fasthttp.RequestCtx) {
 
 	// remove image in 3 minutes
 	go removeImageInTime(imagePath)
-	fullImageUrl := string(ctx.Host()) + "/" + imagePath
+	fullImageUrl := "http://" + string(ctx.Host()) + "/" + imagePath
 	ctx.SetBody([]byte(fullImageUrl))
 }
 

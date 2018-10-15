@@ -13,12 +13,37 @@
             Image Converter from PNG to JPEG
         </h1>
     </div>
-    <div style="width:100%; text-align:center; margin-top:15%;">
-        <form action="/api/convert" method="post" enctype="multipart/form-data">
-            <input type="file" name="fileToUpload" id="fileToUpload">
-            <input type="submit" value="Upload Image" name="submit">
-        </form>
+    <div style="width:100%; text-align:center; margin-top: 15%;">
+        <input type="file" name="fileInput" id="fileInput" accept=".png">
+        <button id="submitBtn">Convert</button>
     </div>
+
+    <div id="result"></div>
+
+    <script>
+        const url = "/api/convert"
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            let file = document.getElementById('fileInput').files[0];
+            
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "image/png",
+                },
+                body: file,
+            })
+                .then(res => {
+                    return res.text();
+                })
+                .then(data => {
+                    const responseBlock = document.getElementById("result")
+                    responseBlock.innerHTML = `<img src="${data}">`
+                })
+        });
+    </script>
     
 </body>
 </html>

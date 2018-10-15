@@ -1,12 +1,12 @@
 package handler
 
 import (
+	"bytes"
 	"crypto/md5"
 	"fmt"
 	"image/jpeg"
 	"image/png"
 	"imageConverter/logger"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -26,40 +26,47 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func ConvertHandler(ctx *fasthttp.RequestCtx) {
-	formData, err := ctx.FormFile("fileToUpload")
+	// // returns fileHeader
+	// formData, err := ctx.FormFile("fileToUpload")
+	// if err != nil {
+	// 	logger.LoggerInfo(err.Error())
+	// 	ctx.SetBody([]byte(err.Error()))
+	// 	return
+	// }
+
+	// // return File
+	// inputFile, err := formData.Open()
+	// if err != nil {
+	// 	logger.LoggerInfo(err.Error())
+	// 	ctx.SetBody([]byte(err.Error()))
+	// 	return
+	// }
+
+	bytesInputJPG := ctx.PostBody()
+	r := bytes.NewReader(bytesInputJPG)
+
+	// return Image
+	inputPNG, err := png.Decode(r)
 	if err != nil {
 		logger.LoggerInfo(err.Error())
 		ctx.SetBody([]byte(err.Error()))
 		return
 	}
 
-	inputFile, err := formData.Open()
-	if err != nil {
-		logger.LoggerInfo(err.Error())
-		ctx.SetBody([]byte(err.Error()))
-		return
-	}
-
-	inputPNG, err := png.Decode(inputFile)
-	if err != nil {
-		logger.LoggerInfo(err.Error())
-		ctx.SetBody([]byte(err.Error()))
-		return
-	}
-
-	pngBytes, err := ioutil.ReadAll(inputFile)
-	if err != nil {
-		logger.LoggerInfo(err.Error())
-		ctx.SetBody([]byte(err.Error()))
-		return
-	}
+	// return []bytes
+	// pngBytes, err := ioutil.ReadAll(inputFile)
+	// if err != nil {
+	// 	logger.LoggerInfo(err.Error())
+	// 	ctx.SetBody([]byte(err.Error()))
+	// 	return
+	// }
 
 	if _, err := os.Stat(imagesDirPath); os.IsNotExist(err) {
 		os.Mkdir(imagesDirPath, 0777)
 	}
 	_ = os.Mkdir(imagesDirPath, 0777)
 
-	imagePath := imagesDirPath + fmt.Sprintf("%x", md5.Sum(pngBytes)) + ".jpg"
+	imagePath := imagesDirPath + fmt.Sprintf("%x", md5.Sum(bytesInputJPG)) + ".jpg"
 	jpgImgFile, err := os.Create(imagePath)
 	if err != nil {
 		logger.LoggerInfo(err.Error())

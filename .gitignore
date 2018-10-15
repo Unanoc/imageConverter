@@ -13,3 +13,4 @@
 
 imageConverter
 *.fasthttp.gz
+static/images

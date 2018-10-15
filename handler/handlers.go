@@ -13,6 +13,10 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+const (
+	imagesDirPath = "static/images/"
+)
+
 func ImgHandler(ctx *fasthttp.RequestCtx) {
 	fasthttp.ServeFile(ctx, string(ctx.Path())[1:]) // removing "/" in the begining of the path "/static/images/{image_name}.jpg"
 }
@@ -42,7 +46,12 @@ func ConvertHandler(ctx *fasthttp.RequestCtx) {
 		logger.LoggerInfo(err.Error())
 	}
 
-	imagePath := "static/images/" + fmt.Sprintf("%x", md5.Sum(pngBytes)) + ".jpg"
+	if _, err := os.Stat(imagesDirPath); os.IsNotExist(err) {
+		os.Mkdir(imagesDirPath, 0777)
+	}
+	_ = os.Mkdir(imagesDirPath, 0777)
+
+	imagePath := imagesDirPath + fmt.Sprintf("%x", md5.Sum(pngBytes)) + ".jpg"
 	jpgImgFile, err := os.Create(string(imagePath))
 	if err != nil {
 		logger.LoggerInfo(err.Error())
@@ -56,7 +65,8 @@ func ConvertHandler(ctx *fasthttp.RequestCtx) {
 
 	// remove image in 3 minutes
 	go removeImageInTime(imagePath)
-	ctx.Write([]byte(imagePath))
+	fullImageUrl := string(ctx.Host()) + "/" + imagePath
+	ctx.Write([]byte(fullImageUrl))
 }
 
 func removeImageInTime(pathToFile string) {

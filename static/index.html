@@ -18,7 +18,7 @@
         <button id="submitBtn">Convert</button>
     </div>
 
-    <div id="result" style></div>
+    <div id="result" style="style="width:100%; text-align:center; margin-top: 5px;"></div>
 
     <script>
         const url = "/api/convert"
@@ -40,7 +40,7 @@
                 })
                 .then(data => {
                     const responseBlock = document.getElementById("result")
-                    responseBlock.innerHTML = `<a hreg="${data}">Your image!</a>`
+                    responseBlock.innerHTML = `<a href="${data}">Your image!</a>`
                 })
         });
     </script>

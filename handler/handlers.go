@@ -26,22 +26,6 @@ func MainHandler(ctx *fasthttp.RequestCtx) {
 }
 
 func ConvertHandler(ctx *fasthttp.RequestCtx) {
-	// // returns fileHeader
-	// formData, err := ctx.FormFile("fileToUpload")
-	// if err != nil {
-	// 	logger.LoggerInfo(err.Error())
-	// 	ctx.SetBody([]byte(err.Error()))
-	// 	return
-	// }
-
-	// // return File
-	// inputFile, err := formData.Open()
-	// if err != nil {
-	// 	logger.LoggerInfo(err.Error())
-	// 	ctx.SetBody([]byte(err.Error()))
-	// 	return
-	// }
-
 	bytesInputJPG := ctx.PostBody()
 	r := bytes.NewReader(bytesInputJPG)
 
@@ -52,14 +36,6 @@ func ConvertHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetBody([]byte(err.Error()))
 		return
 	}
-
-	// return []bytes
-	// pngBytes, err := ioutil.ReadAll(inputFile)
-	// if err != nil {
-	// 	logger.LoggerInfo(err.Error())
-	// 	ctx.SetBody([]byte(err.Error()))
-	// 	return
-	// }
 
 	if _, err := os.Stat(imagesDirPath); os.IsNotExist(err) {
 		os.Mkdir(imagesDirPath, 0777)
